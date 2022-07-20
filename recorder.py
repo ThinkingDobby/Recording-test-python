@@ -1,5 +1,5 @@
 import sys
-from recording_func import *
+import recording_func
 from PyQt5.QtWidgets import QApplication, QWidget, QPushButton, QVBoxLayout, QFileDialog
 
 
@@ -19,9 +19,14 @@ class MyApp(QWidget):
         self.btn_stop.setText('중지')
         self.btn_stop.clicked.connect(self.stop_btn_clicked)
 
+        self.btn_path = QPushButton(self)
+        self.btn_path.setText('저장위치 선택')
+        self.btn_path.clicked.connect(self.set_path)
+
         vbox = QVBoxLayout()
         vbox.addWidget(self.btn_record)
         vbox.addWidget(self.btn_stop)
+        vbox.addWidget(self.btn_path)
 
         self.btn_record.setEnabled(True)
         self.btn_stop.setEnabled(False)
@@ -34,15 +39,18 @@ class MyApp(QWidget):
     def start_btn_clicked(self):
         self.btn_record.setEnabled(False)
         self.btn_stop.setEnabled(True)
-        start_recording()
+        recording_func.start_recording()
 
     def stop_btn_clicked(self):
         self.btn_record.setEnabled(True)
         self.btn_stop.setEnabled(False)
-        stop_recording()
+        recording_func.stop_recording()
 
     def set_path(self):
-        file = str(QFileDialog.getExistingDirectory(self, "Select Directory"))
+        tmp =  str(QFileDialog.getExistingDirectory(self, "Select Directory")) + '/test.wav'
+        if tmp != '/test.wav':
+            recording_func.storage_path = tmp
+        print(recording_func.storage_path)
 
 
 if __name__ == '__main__':

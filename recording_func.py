@@ -7,7 +7,7 @@ q = queue.Queue()
 recorder = False
 recording = False
 
-storage_path = ''
+storage_path = 'test.wav'
 
 
 def complicated_record():
