@@ -1,5 +1,4 @@
-import queue, os, threading
-import time
+import queue, threading
 
 import sounddevice as sd
 import soundfile as sf
@@ -8,9 +7,11 @@ q = queue.Queue()
 recorder = False
 recording = False
 
+storage_path = ''
+
 
 def complicated_record():
-    with sf.SoundFile("test.wav", mode='w', samplerate=16000, subtype='PCM_16', channels=1) as file:
+    with sf.SoundFile(storage_path, mode='w', samplerate=16000, subtype='PCM_16', channels=1) as file:
         with sd.InputStream(samplerate=16000, dtype='int16', channels=1, callback=complicated_save):
             while recording:
                 file.write(q.get())
@@ -20,7 +21,8 @@ def complicated_save(indata, frames, time, status):
     q.put(indata.copy())
 
 
-def start():
+# 녹음 시작
+def start_recording():
     global recorder
     global recording
     recording = True
@@ -29,13 +31,10 @@ def start():
     recorder.start()
 
 
-def stop():
+# 녹음 중지
+def stop_recording():
     global recorder
     global recording
     recording = False
     recorder.join()
     print('stop recording')
-
-start()
-time.sleep(3)
-stop()
