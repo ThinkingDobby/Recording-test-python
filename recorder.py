@@ -1,6 +1,7 @@
 import sys
 import recording_func
 from PyQt5.QtWidgets import QApplication, QWidget, QPushButton, QVBoxLayout, QFileDialog
+import librosa
 
 
 class MyApp(QWidget):
@@ -16,7 +17,7 @@ class MyApp(QWidget):
         self.btn_record.clicked.connect(self.start_btn_clicked)
 
         self.btn_stop = QPushButton(self)
-        self.btn_stop.setText('중지')
+        self.btn_stop.setText('녹음 중지')
         self.btn_stop.clicked.connect(self.stop_btn_clicked)
 
         self.btn_path = QPushButton(self)
@@ -39,18 +40,24 @@ class MyApp(QWidget):
     def start_btn_clicked(self):
         self.btn_record.setEnabled(False)
         self.btn_stop.setEnabled(True)
+        # 녹음 시작
         recording_func.start_recording()
 
     def stop_btn_clicked(self):
         self.btn_record.setEnabled(True)
         self.btn_stop.setEnabled(False)
+        # 녹음 중지
         recording_func.stop_recording()
+        # 녹음한 파일 특징 추출해 출력
+        signal, sr = librosa.load(recording_func.storage_path, sr=16000)  # sr은 음성데이터마다 다름 - wav는 16000
+        mfcc = librosa.feature.mfcc(y=signal, sr=sr)
+        print(mfcc)
 
     def set_path(self):
-        tmp =  str(QFileDialog.getExistingDirectory(self, "Select Directory")) + '/test.wav'
+        tmp = str(QFileDialog.getExistingDirectory(self, "Select Directory")) + '/test.wav'
         if tmp != '/test.wav':
             recording_func.storage_path = tmp
-        print(recording_func.storage_path)
+        print('file_path: ' + recording_func.storage_path)
 
 
 if __name__ == '__main__':
