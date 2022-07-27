@@ -49,7 +49,7 @@ class MyApp(QWidget):
         # 녹음 중지
         recording_func.stop_recording()
         # 녹음한 파일 특징 추출해 출력
-        signal, sr = librosa.load(recording_func.storage_path, sr=16000)  # sr은 음성데이터마다 다름 - wav는 16000
+        signal, sr = librosa.load(recording_func.storage_path, sr=16000)
         mfcc = librosa.feature.mfcc(y=signal, sr=sr)
         print(mfcc)
 
